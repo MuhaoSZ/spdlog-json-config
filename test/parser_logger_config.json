@@ -1,0 +1,71 @@
+{
+    "SINKS": {
+        "stdout_color_sink": {
+            "type": "stdout_color_sink_mt",
+            "level": "debug"
+        },
+
+        "stderr_color_sink": {
+            "type": "stderr_color_sink_mt",
+            "level": "debug"
+        },
+
+        "syslog_sink": {
+            "type": "syslog_sink_mt",
+            "indent": "  ",
+            "level": "debug"
+        },
+
+        "basic_file_sink": {
+            "type": "basic_file_sink_mt",
+            "file_name": "./logs/logfile.log",
+            "truncate": true,
+            "level": "debug"
+        },
+
+        "daily_file_sink": {
+            "type": "daily_file_sink_mt",
+            "base_file_name": "./logs/daily.log",
+            "rotation_hour": 0,
+            "rotation_minitue":0,
+            "truncate": false,
+            "level": "debug"
+        },
+
+        "rotate_file_sink": {
+            "type": "rotating_file_sink_mt",
+            "base_file_name": "./logs/rotate.log",
+            "max_size": 10485760,
+            "max_files": 10,
+            "level": "debug"
+        }
+
+    },
+
+    "PATTERNS": {
+        "general_pattern": "[%C-%m-%d %H:%M:%S.%e][%n]%^[%L]%$ %v"
+    },
+
+    "LOGGERS": {
+        "CONSOLE": {
+            "sinks": ["stdout_color_sink"],
+            "pattern": "general_pattern",
+            "level": "debug",
+            "sync_type": "sync"
+        },
+
+        "PARSER": {
+            "sinks": ["stdout_color_sink", "syslog_sink", "basic_file_sink", "daily_file_sink", "rotate_file_sink"],
+            "pattern": "general_pattern",
+            "level": "debug",
+            "sync_type": "async"
+        }
+    },
+    
+    "THREAD_POOL": {
+        "thread_count": 2,
+        "queue_size": 8192
+    }
+    
+}
+

@@ -1,0 +1,51 @@
+{
+    "SINKS": {
+        "color_stdout_sink": {
+            "type": "stdout_color_sink_mt"
+        },
+
+        "daily_file_sink": {
+            "type": "daily_file_sink_mt",
+            "base_file_name": "./logs/daily.log",
+            "rotation_hour": 0,
+            "rotation_minitue":0,
+            "level": "debug"
+        },
+
+        "rotate_file_sink": {
+            "type": "rotating_file_sink_mt",
+            "base_file_name": "./logs/rotate.log",
+            "max_size": "100M",
+            "max_file": 10,
+            "level": "debug"
+        }
+
+    },
+
+    "PATTERNS": {
+        "general_pattern": "[%C-%m-%d %H:%M:%S.%e][%n]%^[%L]%$ %v"
+    },
+
+    "LOGGERS": {
+        "console_logger": {
+            "sinks": ["color_stdout_sink"],
+            "pattern": "general_pattern",
+            "level": "debug",
+            "sync_type": "sync"
+        },
+
+        "DEMO": {
+            "sinks": ["color_stdout_sink", "daily_file_sink"],
+            "pattern": "general_pattern",
+            "level": "debug",
+            "sync_type": "async"
+        }
+    },
+    
+    "THREAD_POOL": {
+        "thread_count": 2,
+        "queue_size": 8192
+    }
+    
+}
+

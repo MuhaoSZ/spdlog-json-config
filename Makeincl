@@ -1,0 +1,19 @@
+
+
+MAKE ?= $(shell which make)
+GCC  ?= gcc
+GXX  ?= g++
+CC   ?= g++
+AR   ?= ar
+
+RM   ?= rm -f
+MV   ?= mv
+
+#ROOTDIR ?= $(realpath $(dir $(lastword $(MAKEFILE_LIST))))
+ROOTDIR ?= $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
+
+CFLAGS  := -ggdb -Wall -O3 -std=c++11 -pthread -flto -Wl,--no-as-needed
+INCLUDE := -I. 
+INCLUDE += -I $(ROOTDIR)/deps/rapidjson/include
+INCLUDE += -I $(ROOTDIR)/deps/spdlog/include
+
