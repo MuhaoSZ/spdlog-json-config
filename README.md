@@ -36,7 +36,15 @@ The codes are tested against g++4.8.5, GNU Make 3.82 on CentOS 7
 * [rapidjson](https://github.com/Tencent/rapidjson)
 
 ## How to use
+The spdlog_json_config depends on spdlog and rapidjson. To use it, please include the header
+file in your codes and make sure that spdlog and rapidjson are also included.  
+To checkout the codes, please run the following commands:  
 
+    git clone git://github.com/MuhaoSZ/spdlog-json-config.git
+    git submodule init
+    git submodule update  
+
+To run the examples, just run `make` in the root directory.
 
 ## Configuration Example
     {
