@@ -230,7 +230,7 @@ private:
 
         buffer = (char*)malloc(sizeof(char) * filesize);
         if (buffer == NULL) {
-            printf("%s::%s: Fail to allocate memory for buffer. file size = %ld\n",
+            printf("%s::%s: Fail to allocate memory for buffer. file size = %lld\n",
                    __CLASS__, __FUNCTION__, filesize);
             return false;
         }
