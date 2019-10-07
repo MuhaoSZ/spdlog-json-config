@@ -216,7 +216,7 @@ private:
         char* buffer = nullptr;
         size_t result;
 
-        FILE* f = fopen(file_path.c_str(), "r");
+        FILE* f = fopen(file_path.c_str(), "rb");
 
         if (f == NULL) {
             printf("%s::%s: Fail to open configuration file: %s\n",
