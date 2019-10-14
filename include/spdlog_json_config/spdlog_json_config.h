@@ -24,7 +24,14 @@
 #include "spdlog/details/thread_pool.h"
 #include "spdlog/sinks/stdout_sinks.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
+
+#ifdef _WIN32
+#include "spdlog/sinks/wincolor_sink.h"
+#else
+#include "spdlog/sinks/ansicolor_sink.h"
 #include "spdlog/sinks/syslog_sink.h"
+#endif
+
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/sinks/daily_file_sink.h"
 #include "spdlog/sinks/rotating_file_sink.h"
@@ -74,8 +81,10 @@ public:
     const constexpr static char* SINK_TYPE_STDOUT_COLOR_SINK_MT     = "stdout_color_sink_mt";
     const constexpr static char* SINK_TYPE_STDERR_COLOR_SINK_ST     = "stderr_color_sink_st";
     const constexpr static char* SINK_TYPE_STDERR_COLOR_SINK_MT     = "stderr_color_sink_mt";
+    #ifndef _WIN32
     const constexpr static char* SINK_TYPE_SYSLOG_SINK_ST           = "syslog_sink_st";
     const constexpr static char* SINK_TYPE_SYSLOG_SINK_MT           = "syslog_sink_mt";
+	#endif
     const constexpr static char* SINK_TYPE_BASIC_FILE_SINK_ST       = "basic_file_sink_st";
     const constexpr static char* SINK_TYPE_BASIC_FILE_SINK_MT       = "basic_file_sink_mt";
     const constexpr static char* SINK_TYPE_DAILY_FILE_SINK_ST       = "daily_file_sink_st";
@@ -161,8 +170,10 @@ private:
         supported_sink_type_.insert(SINK_TYPE_STDOUT_COLOR_SINK_MT);
         supported_sink_type_.insert(SINK_TYPE_STDERR_COLOR_SINK_ST);
         supported_sink_type_.insert(SINK_TYPE_STDERR_COLOR_SINK_MT);
+        #ifndef _WIN32
         supported_sink_type_.insert(SINK_TYPE_SYSLOG_SINK_ST);
         supported_sink_type_.insert(SINK_TYPE_SYSLOG_SINK_MT);
+		#endif
         supported_sink_type_.insert(SINK_TYPE_BASIC_FILE_SINK_ST);
         supported_sink_type_.insert(SINK_TYPE_BASIC_FILE_SINK_MT);
         supported_sink_type_.insert(SINK_TYPE_DAILY_FILE_SINK_ST);
@@ -205,7 +216,7 @@ private:
         char* buffer = nullptr;
         size_t result;
 
-        FILE* f = fopen(file_path.c_str(), "r");
+        FILE* f = fopen(file_path.c_str(), "rb");
 
         if (f == NULL) {
             printf("%s::%s: Fail to open configuration file: %s\n",
@@ -219,7 +230,7 @@ private:
 
         buffer = (char*)malloc(sizeof(char) * filesize);
         if (buffer == NULL) {
-            printf("%s::%s: Fail to allocate memory for buffer. file size = %ld\n",
+            printf("%s::%s: Fail to allocate memory for buffer. file size = %lld\n",
                    __CLASS__, __FUNCTION__, filesize);
             return false;
         }
@@ -492,6 +503,7 @@ private:
         else if(sink_type == SINK_TYPE_STDERR_COLOR_SINK_MT){
             sink_map_[sink_name] = std::make_shared<spdlog::sinks::stderr_color_sink_mt>();
         }
+		#ifndef _WIN32
         else if(sink_type == SINK_TYPE_SYSLOG_SINK_ST ||
                 sink_type == SINK_TYPE_SYSLOG_SINK_MT){
 
@@ -509,6 +521,7 @@ private:
                 sink_map_[sink_name] = std::make_shared<spdlog::sinks::syslog_sink_mt>(indent);
             }
         }
+		#endif
         else if(sink_type == SINK_TYPE_BASIC_FILE_SINK_ST ||
                 sink_type == SINK_TYPE_BASIC_FILE_SINK_MT){
             std::string file_name;
@@ -651,7 +664,11 @@ private:
     bool CreateDirectory(const char* dir_path){
         struct stat st = {0};
         if(stat(dir_path, &st) == -1){
+			#ifdef _WIN32
+			  if (mkdir(dir_path) == -1) return false;
+			#else
             if (mkdir(dir_path, 0755) == -1) return false;
+			#endif
         }
         return true;
     }
